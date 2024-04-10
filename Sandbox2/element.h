@@ -16,4 +16,5 @@ public:
 
 	void render(sf::RenderWindow& window, sf::Shape& shape) const;
 	void setPos(int x, int y);
+	Element::ElementType getType() const;
 };

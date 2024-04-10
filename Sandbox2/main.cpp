@@ -4,7 +4,9 @@
 #include "board.h"
 #include "global.h"
 
-void ProcessEvent(sf::RenderWindow& window);
+void processEvent(sf::RenderWindow& window);
+
+Element::ElementType currentType{ Element::ElementType::SAND };
 
 int main() {
 	sf::RenderWindow window{ sf::VideoMode{ GLOBAL::SCR_SIZE, GLOBAL::SCR_SIZE }, "Sandbox 2"};
@@ -12,15 +14,31 @@ int main() {
 	sf::RectangleShape grainShape{ sf::Vector2f{ GLOBAL::GRAIN_SIZE, GLOBAL::GRAIN_SIZE } };
 
 	Board board{};
-	board.addElement(2,2,Element::ElementType::SAND);
-	board.addElement(4,4,Element::ElementType::WATER);
+	sf::Clock physicsClock{};
 
 	while (window.isOpen()) 
 	{
-		ProcessEvent(window);
-		window.clear(sf::Color{ 20, 30, 40, 255 });
+		processEvent(window);
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+			board.addElement(mousePos.x / GLOBAL::GRAIN_SIZE, mousePos.y / GLOBAL::GRAIN_SIZE, currentType);
+		}
+
+		window.clear(sf::Color{ 22, 23, 26, 255 });
+
+		if (physicsClock.getElapsedTime().asSeconds() >= 1.0f / GLOBAL::PHYSICS_RATE) {
+			board.calculatePhysics();
+			physicsClock.restart();
+		}
 
 		board.render(window, grainShape);
+
+		/* BENCHMARK
+		for (int i = 0; i < GLOBAL::BOARD_SIZE; ++i) {
+			board.addElement(i, i % 2, currentType);
+		}
+		*/
 
 		window.display();
 	}
@@ -28,7 +46,7 @@ int main() {
 	return 0;
 }
 
-void ProcessEvent(sf::RenderWindow& window)
+void processEvent(sf::RenderWindow& window)
 {
 	sf::Event event;
 
@@ -40,6 +58,10 @@ void ProcessEvent(sf::RenderWindow& window)
 		case sf::Event::KeyPressed:
 			if (event.key.scancode == sf::Keyboard::Scan::Escape)
 				window.close();
+			if (event.key.scancode == sf::Keyboard::Scan::Num1)
+				currentType = Element::ElementType::SAND;
+			if (event.key.scancode == sf::Keyboard::Scan::Num2)
+				currentType = Element::ElementType::WATER;
 			break;
 		default:
 			break;

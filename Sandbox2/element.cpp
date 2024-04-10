@@ -28,3 +28,7 @@ void Element::setPos(int x, int y) {
 	Xpos = x;
 	Ypos = y;
 }
+
+Element::ElementType Element::getType() const {
+	return type;
+}
