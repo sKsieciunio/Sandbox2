@@ -34,8 +34,8 @@ int main() {
 		ProcessEvent(window);
 		window.clear(sf::Color{ 20, 30, 40, 255 });
 
-		Element e1{ 4, 4, Element::ElementType::SAND };
-		Element e2{ 5, 10, Element::ElementType::WATER };
+		Element e1{ 0, 0, Element::ElementType::SAND };
+		Element e2{ 1, 0, Element::ElementType::WATER };
 
 		e1.render(window, grainShape);
 		e2.render(window, grainShape);
@@ -44,6 +44,10 @@ int main() {
 	}
 
 	return 0;
+}
+
+void render(Element*** board) {
+
 }
 
 void ProcessEvent(sf::RenderWindow& window)
