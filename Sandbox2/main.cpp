@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "element.h"
+#include "board.h"
 #include "global.h"
 
 void ProcessEvent(sf::RenderWindow& window);
@@ -10,44 +11,21 @@ int main() {
 
 	sf::RectangleShape grainShape{ sf::Vector2f{ GLOBAL::GRAIN_SIZE, GLOBAL::GRAIN_SIZE } };
 
-	try {
-		Element*** board = new Element**[GLOBAL::BOARD_SIZE];
-
-		for (int i = 0; i < GLOBAL::BOARD_SIZE; ++i) {
-			board[i] = new Element*[GLOBAL::BOARD_SIZE];
-
-			for (int j = 0; j < GLOBAL::BOARD_SIZE; ++j) {
-				board[i][j] = nullptr;
-			}
-		}
-	}
-	catch (std::bad_alloc& e) {
-		std::cerr << e.what() << std::endl;
-		return 1;
-	}
-	catch (...) {
-		return 2;
-	}
+	Board board{};
+	board.addElement(2,2,Element::ElementType::SAND);
+	board.addElement(4,4,Element::ElementType::WATER);
 
 	while (window.isOpen()) 
 	{
 		ProcessEvent(window);
 		window.clear(sf::Color{ 20, 30, 40, 255 });
 
-		Element e1{ 0, 0, Element::ElementType::SAND };
-		Element e2{ 1, 0, Element::ElementType::WATER };
-
-		e1.render(window, grainShape);
-		e2.render(window, grainShape);
+		board.render(window, grainShape);
 
 		window.display();
 	}
 
 	return 0;
-}
-
-void render(Element*** board) {
-
 }
 
 void ProcessEvent(sf::RenderWindow& window)
